@@ -130,7 +130,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: blackhataakash
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push ML service
@@ -139,7 +139,7 @@ jobs:
           context: .
           file: ./Dockerfile.ml
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/retainiq-ml:latest
+          tags: blackhataakash/retainiq-ml:latest
 
       - name: Build and push Agent service
         uses: docker/build-push-action@v5
@@ -147,7 +147,7 @@ jobs:
           context: .
           file: ./Dockerfile.agent
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/retainiq-agent:latest
+          tags: blackhataakash/retainiq-agent:latest
 
       - name: Build and push Orchestrator
         uses: docker/build-push-action@v5
@@ -155,7 +155,7 @@ jobs:
           context: .
           file: ./Dockerfile.orchestrator
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/retainiq-orchestrator:latest
+          tags: blackhataakash/retainiq-orchestrator:latest
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
@@ -163,4 +163,4 @@ jobs:
           context: .
           file: ./Dockerfile.frontend
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/retainiq-frontend:latest
+          tags: blackhataakash/retainiq-frontend:latest
