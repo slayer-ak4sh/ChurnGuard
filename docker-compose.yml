@@ -1,0 +1,88 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: retainiq_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: churnguard_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "010200"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d churnguard_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ml_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.ml
+    container_name: retainiq_ml
+    ports:
+      - "8001:8001"
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  agent_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    container_name: retainiq_agent
+    ports:
+      - "8002:8002"
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.orchestrator
+    container_name: retainiq_orchestrator
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/churnguard_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=010200
+      - ML_SERVICE_URL=http://ml_service:8001
+      - AGENT_SERVICE_URL=http://agent_service:8002
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ml_service:
+        condition: service_healthy
+      agent_service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: retainiq_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      orchestrator:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

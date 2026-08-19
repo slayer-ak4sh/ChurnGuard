@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual env
+venv/
+env/
+.venv/
+
+# Model artifacts (large files)
+*.pkl
+*.bz2
+*.h5
+
+# Data
+*.csv
+
+# Environment
+.env
+
+# Node
+frontend/node_modules/
+frontend/build/
+
+# Spring Boot
+orchestrator/target/
+
+# Logs
+*.log
+/tmp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.iml
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
