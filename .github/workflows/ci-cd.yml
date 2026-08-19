@@ -128,6 +128,7 @@ jobs:
         run: mvn package -DskipTests -q
 
       - name: Log in to Docker Hub
+        if: ${{ secrets.DOCKER_USERNAME != '' }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -138,29 +139,29 @@ jobs:
         with:
           context: .
           file: ./Dockerfile.ml
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/retainiq-ml:latest
+          push: ${{ secrets.DOCKER_USERNAME != '' }}
+          tags: retainiq-ml:latest
 
       - name: Build and push Agent service
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile.agent
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/retainiq-agent:latest
+          push: ${{ secrets.DOCKER_USERNAME != '' }}
+          tags: retainiq-agent:latest
 
       - name: Build and push Orchestrator
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile.orchestrator
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/retainiq-orchestrator:latest
+          push: ${{ secrets.DOCKER_USERNAME != '' }}
+          tags: retainiq-orchestrator:latest
 
       - name: Build and push Frontend
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile.frontend
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/retainiq-frontend:latest
+          push: ${{ secrets.DOCKER_USERNAME != '' }}
+          tags: retainiq-frontend:latest
