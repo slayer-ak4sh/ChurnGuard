@@ -19,8 +19,8 @@ env/
 *.bz2
 *.h5
 
-# Data
-*.csv
+# Data (exclude large raw files but keep training CSV for Docker build)
+# *.csv
 
 # Environment
 .env
